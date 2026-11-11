@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/manrope';
+
+@theme {
+  --color-bg-page: #faf9f6;
+  --color-bg-surface: #ffffff;
+  --color-bg-subtle: #eeefeb;
+  --color-bg-placeholder: #dfe5e0;
+  --color-bg-inverse: #172b29;
+  --color-text-primary: #172522;
+  --color-text-secondary: #41524d;
+  --color-text-placeholder: #4f605a;
+  --color-text-inverse: #ffffff;
+  --color-text-link-hover: #245f56;
+  --color-accent-solid: #245f56;
+  --color-accent-hover: #193f3a;
+  --color-border-subtle: #d1d9d3;
+  --color-border-inverse: #6b817a;
+  --color-focus: #17665e;
+  --font-heading: 'Manrope Variable', Arial, sans-serif;
+  --font-sans: 'Manrope Variable', Arial, sans-serif;
+}
+:root { --section-space: clamp(4.5rem, 8vw, 7.5rem); }
+html { background: var(--color-bg-page); color: var(--color-text-primary); scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--font-sans); line-height: 1.6; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-family: var(--font-heading); line-height: 1.2; text-wrap: balance; }
+p { text-wrap: pretty; }
+h1, h2 { font-weight: 800; letter-spacing: -.02em; text-transform: uppercase; }
+h2 { font-size: clamp(2rem, 3.7vw, 3.35rem); }
+:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
+.utility-bar :focus-visible, .footer :focus-visible { outline-color: var(--color-text-inverse); }
+.container-site { @apply mx-auto w-full max-w-7xl px-5; }
+.section-space { padding-block: var(--section-space); scroll-margin-top: 9rem; }
+.button { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; padding: .85rem 1.35rem; background: var(--color-accent-solid); color: var(--color-text-inverse); font-size: .75rem; font-weight: 700; letter-spacing: .03em; text-decoration: none; text-transform: uppercase; }
+@media (hover: hover) {
+  .button:hover, .header-call:hover, .mobile-nav .mobile-consultation:hover { background: var(--color-accent-hover); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .button, .header-call, .mobile-consultation { transition: background-color 180ms ease-out, transform 180ms ease-out; }
+  @media (hover: hover) {
+    .button:hover, .header-call:hover, .mobile-consultation:hover { transform: translateY(-2px); }
+  }
+}
+.text-link { display: inline-flex; align-items: center; gap: .4rem; min-height: 44px; color: var(--color-text-primary); font-size: .82rem; font-weight: 700; text-decoration: underline; text-underline-offset: .3em; }
+@media (hover: hover) { .text-link:hover { color: var(--color-text-link-hover); text-decoration-color: var(--color-text-link-hover); } }
+@media (prefers-reduced-motion: no-preference) { .text-link { transition: color 150ms ease-out, text-decoration-color 150ms ease-out, transform 150ms ease-out; } }
+@media (prefers-reduced-motion: no-preference) and (hover: hover) { .text-link:hover { transform: translateY(-2px); } }
+@media (hover: hover) { a[href^="tel:"]:hover, a[href^="mailto:"]:hover { text-decoration-line: underline; text-underline-offset: .25em; } }
+.skip-link { position: absolute; left: 1rem; top: 1rem; z-index: 30; transform: translateY(-200%); background: var(--color-bg-surface); color: var(--color-text-primary); padding: .75rem 1rem; }
+.skip-link:focus { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }

@@ -1,0 +1,14 @@
+---
+interface Props { label: string; variant?: 'portrait' | 'landscape'; }
+const { label, variant = 'portrait' } = Astro.props;
+---
+<!-- TODO: Replace this placeholder with the approved image and meaningful alt text. -->
+<div class:list={['image-placeholder', variant]} role="img" aria-label={label}>
+  <span>{label}</span>
+</div>
+<style>
+  .image-placeholder { display: grid; place-items: center; min-width: 0; background: var(--color-bg-placeholder); color: var(--color-text-placeholder); overflow: hidden; }
+  .image-placeholder span { padding: 1rem; text-align: center; font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+  .portrait { min-height: 100%; aspect-ratio: 4 / 5; }
+  .landscape { width: 100%; aspect-ratio: 16 / 10; }
+</style>

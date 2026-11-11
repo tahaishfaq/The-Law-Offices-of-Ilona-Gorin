@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/layout/SiteHeader.astro';
+import Hero from '../components/sections/Hero.astro';
+import FirmResults from '../components/sections/FirmResults.astro';
+import PracticeAreas from '../components/sections/PracticeAreas.astro';
+import AttorneyIntroduction from '../components/sections/AttorneyIntroduction.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
+import ContactCTA from '../components/sections/ContactCTA.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+---
+<BaseLayout
+  title="Solicitor - Webflow HTML website template"
+  description="Solicitor is a clean responsive Webflow Template designed for Law Firm, Law Advisers, Legal Officers, Barristers, Consultancy, Finance, Solicitor, Advocates, Counsels."
+>
+  <SiteHeader />
+  <main id="main">
+    <Hero />
+    <AttorneyIntroduction />
+    <FirmResults />
+    <PracticeAreas />
+    <Testimonials />
+    <ContactCTA />
+  </main>
+  <SiteFooter />
+</BaseLayout>

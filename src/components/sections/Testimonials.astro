@@ -1,0 +1,83 @@
+---
+import { testimonials } from '../../data/testimonials';
+import Icon from '../ui/Icon.astro';
+---
+<section class="testimonials section-space" aria-labelledby="testimonials-title" aria-roledescription="carousel">
+  <div class="container-site">
+    <div class="heading">
+      <h2 id="testimonials-title">What our clients say</h2>
+      <div class="carousel-controls" hidden>
+        <button type="button" data-direction="-1" aria-label="Previous testimonials" aria-controls="testimonial-track"><Icon name="arrow-left" /></button>
+        <button type="button" data-direction="1" aria-label="Next testimonials" aria-controls="testimonial-track"><Icon name="arrow-right" /></button>
+      </div>
+    </div>
+    <div class="reviews" id="testimonial-track" tabindex="0" aria-label="Client reviews">
+      {testimonials.map((review, index) => (
+        <article class="review" aria-label={`Review ${index + 1} of ${testimonials.length}`}>
+          <span class="quote-mark"><Icon name="quote" size={28} /></span>
+          {review.summary ? <p class="review-text">{review.quote}</p> : <blockquote class="review-text"><p>{review.quote}</p></blockquote>}
+          <div class="review-author"><p>{review.name}</p><a href={review.sourceUrl}>{review.sourceLabel}</a></div>
+        </article>
+      ))}
+    </div>
+    <span class="sr-only" role="status" data-carousel-status></span>
+  </div>
+</section>
+<script>
+  const carousel = document.querySelector<HTMLElement>('.testimonials');
+  const track = carousel?.querySelector<HTMLElement>('.reviews');
+  const controls = carousel?.querySelector<HTMLElement>('.carousel-controls');
+  if (carousel && track && controls) {
+    const buttons = Array.from(controls.querySelectorAll<HTMLButtonElement>('button'));
+    const status = carousel.querySelector<HTMLElement>('[data-carousel-status]');
+    const cards = Array.from(track.querySelectorAll<HTMLElement>('.review'));
+    const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
+    const step = () => cards[0].getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap);
+    let previousRange = '';
+    const update = () => {
+      const first = Math.round(track.scrollLeft / step()) + 1;
+      const visible = Math.max(1, Math.round(track.clientWidth / step()));
+      const range = `${first}–${Math.min(cards.length, first + visible - 1)} / ${cards.length}`;
+      buttons[0].setAttribute('aria-disabled', String(track.scrollLeft <= 1));
+      buttons[1].setAttribute('aria-disabled', String(track.scrollLeft >= track.scrollWidth - track.clientWidth - 1));
+      if (range !== previousRange) {
+        if (status) status.textContent = `Reviews ${first} to ${Math.min(cards.length, first + visible - 1)} of ${cards.length}`;
+        previousRange = range;
+      }
+    };
+    const move = (direction: number) => track.scrollBy({ left: direction * step(), behavior: motion.matches ? 'smooth' : 'instant' });
+    buttons.forEach((button) => button.addEventListener('click', () => {
+      if (button.getAttribute('aria-disabled') !== 'true') move(Number(button.dataset.direction));
+    }));
+    track.addEventListener('keydown', (event) => {
+      if (event.target === track && ['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+        event.preventDefault();
+        move(event.key === 'ArrowRight' ? 1 : -1);
+      }
+    });
+    track.addEventListener('scroll', update, { passive: true });
+    new ResizeObserver(update).observe(track);
+    controls.hidden = false;
+    update();
+  }
+</script>
+<style>
+  .testimonials { padding-block: 3.75rem; }
+  .heading { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+  h2 { max-width: 24ch; }
+  .carousel-controls { display: flex; align-items: center; gap: .75rem; }
+  .carousel-controls[hidden] { display: none; }
+  button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--color-border-subtle); background: var(--color-bg-surface); color: var(--color-text-primary); cursor: pointer; }
+  button[aria-disabled="true"] { opacity: .4; cursor: default; }
+  @media (hover: hover) { button:not([aria-disabled="true"]):hover { background: var(--color-bg-subtle); } }
+  .reviews { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 2.5rem) / 3); gap: 1.25rem; margin-top: 2.5rem; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding: 4px; scroll-padding-inline: 4px; }
+  .reviews::-webkit-scrollbar { display: none; }
+  .review { display: flex; flex-direction: column; min-width: 0; padding: clamp(1.5rem, 3vw, 2.5rem); background: var(--color-bg-surface); border: 1px solid var(--color-border-subtle); scroll-snap-align: start; }
+  .quote-mark { color: var(--color-accent-solid); }
+  .review-text { margin: 1.5rem 0 2rem; font-size: 1rem; line-height: 1.6; }
+  .review-author { margin-top: auto; font-size: .875rem; font-weight: 700; }
+  .review-author a { display: block; width: fit-content; margin-top: .5rem; color: var(--color-text-secondary); font-size: .75rem; font-weight: 400; text-underline-offset: .25em; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  @media (max-width: 1000px) { .reviews { grid-auto-columns: calc((100% - 1.25rem) / 2); } }
+  @media (max-width: 600px) { .reviews { grid-auto-columns: 100%; } }
+</style>

@@ -1,0 +1,73 @@
+---
+import { links, site } from '../../data/site';
+import Icon from '../ui/Icon.astro';
+const navigation = [
+  { label: 'Home', href: '/' },
+  { label: 'About Us', href: '#about' },
+  { label: 'Practice Areas', href: '#practice-areas' },
+  { label: 'Insights', href: links.blog },
+  { label: 'Contact', href: links.contact },
+];
+const contacts = [
+  { icon: 'phone' as const, label: 'Phone', value: site.phoneDisplay, href: site.phoneHref },
+  { icon: 'mail' as const, label: 'Email', value: site.email, href: site.emailHref },
+  { icon: 'pin' as const, label: 'Address', value: site.address, href: site.mapsHref },
+];
+---
+<footer class="footer">
+  <div class="container-site">
+    <div class="footer-grid">
+      <div class="contact-column">
+        <a href="/" class="firm-name"><span>The Law Offices of</span><strong>Ilona Gorin</strong></a>
+        <address class="contact-details">
+          {contacts.map((contact) => <div class="contact-row"><Icon name={contact.icon} size={22} /><div><span class="contact-label">{contact.label}</span><a href={contact.href}>{contact.value}</a></div></div>)}
+        </address>
+      </div>
+      <nav aria-label="Footer navigation">
+        <h2>Navigation</h2>
+        {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+      </nav>
+      <nav aria-label="Help">
+        <h2>Help</h2>
+        <a href={links.faq}>FAQ</a>
+        <a href={site.emailHref}>Email our office</a>
+        <a href={site.mapsHref}>Get directions</a>
+      </nav>
+      <div class="consultation">
+        <h2>Speak with our office</h2>
+        <p>Discuss your injury claim or business matter with our Encino office.</p>
+        <a class="footer-action" href={site.emailHref}>Request a consultation<Icon name="arrow-right" size={18} /></a>
+      </div>
+    </div>
+    <div class="copyright">© {new Date().getFullYear()} {site.firmName}</div>
+  </div>
+</footer>
+<style>
+  .footer { background: var(--color-bg-inverse); color: var(--color-text-inverse); padding-block: 4rem 1.5rem; }
+  .footer-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, .65fr) minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 3vw, 3rem); padding-bottom: 3rem; }
+  .firm-name { display: inline-flex; flex-direction: column; gap: .35rem; line-height: 1.2; }
+  .firm-name span { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+  .firm-name strong { font-size: 1.65rem; font-weight: 800; letter-spacing: -.03em; text-transform: uppercase; }
+  .contact-details { display: grid; gap: 1.25rem; margin-top: 2rem; font-style: normal; }
+  .contact-row { display: flex; align-items: flex-start; gap: .9rem; }
+  .contact-row :global(svg) { margin-top: .35rem; }
+  .contact-label { display: block; margin-bottom: .1rem; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+  .contact-row a { display: inline-block; min-height: 32px; font-size: .875rem; line-height: 1.6; }
+  .contact-row > div { min-width: 0; }
+  h2 { display: flex; align-items: center; gap: .6rem; margin-bottom: 1.25rem; font: 700 .85rem/1.4 var(--font-sans); }
+  h2::after { content: ''; width: 1.5rem; height: 1px; background: var(--color-border-inverse); flex-shrink: 0; }
+  nav { display: flex; flex-direction: column; align-items: flex-start; }
+  nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: .875rem; }
+  a { color: inherit; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: .25em; overflow-wrap: anywhere; }
+  .consultation p { max-width: 35ch; font-size: .875rem; line-height: 1.7; }
+  .footer-action { display: inline-flex; align-items: center; justify-content: space-between; gap: .75rem; min-height: 48px; padding: .75rem 1rem; margin-top: 1.5rem; background: var(--color-bg-page); color: var(--color-text-primary); font-size: .8rem; font-weight: 700; }
+  .copyright { border-top: 1px solid var(--color-border-inverse); padding-top: 1.5rem; text-align: center; font-size: .75rem; }
+  @media (hover: hover) { a:hover { text-decoration-color: currentColor; } .footer-action:hover { background: var(--color-bg-subtle); } }
+  @media (prefers-reduced-motion: no-preference) {
+    a { transition: text-decoration-color 150ms ease-out; }
+    .footer-action { transition: background-color 150ms ease-out, transform 150ms ease-out; }
+    @media (hover: hover) { .footer-action:hover { transform: translateY(-2px); } }
+  }
+  @media (max-width: 1000px) { .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem; } }
+  @media (max-width: 600px) { .footer-grid { grid-template-columns: 1fr; } .contact-row a { min-height: 44px; } }
+</style>

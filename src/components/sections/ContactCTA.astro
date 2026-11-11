@@ -1,0 +1,8 @@
+---
+import { links, site } from '../../data/site';
+---
+<section class="contact section-space" aria-labelledby="contact-title"><div class="container-site"><div class="panel"><h2 id="contact-title">Start with a conversation.</h2><p>Contact our Encino office to discuss how we may be able to help.</p><div class="actions"><a class="button" href={links.contact}>Request a consultation</a><a class="text-link" href={site.phoneHref}>Call {site.phoneDisplay}</a></div></div></div></section>
+<style>
+  .contact { padding-block: 2.5rem; }
+  .panel { padding: 3.75rem 1.5rem; background: var(--color-bg-subtle); text-align: center; } h2 { max-width: 20ch; margin-inline: auto; } p { margin-top: 1.25rem; color: var(--color-text-secondary); } .actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem 1.75rem; margin-top: 2rem; }
+</style>

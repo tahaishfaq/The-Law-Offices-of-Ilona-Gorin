@@ -1,0 +1,63 @@
+---
+// TODO: Confirm these figures with the attorney before production use.
+const results = [
+  { value: '30', label: 'Years of experience', count: 30, prefix: '', suffix: '' },
+  { value: '10 million dollars', label: 'Recovered for clients', count: 10, prefix: '$', suffix: 'M' },
+  { value: '10,000', label: 'Clients', count: 10000, prefix: '', suffix: '' },
+];
+---
+<section class="results" aria-label="Firm experience and results">
+  <div class="container-site">
+    <dl class="results-grid">
+      {results.map((result) => (
+        <div class="result">
+          <dt>{result.label}</dt>
+          <dd>
+            <span class="sr-only">{result.value}</span><span aria-hidden="true">{result.prefix}<span data-count={result.count}>{result.count.toLocaleString()}</span>{result.suffix}</span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+<script>
+  const section = document.querySelector<HTMLElement>('.results');
+  const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
+  if (section && motion.matches && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      observer.disconnect();
+      const counters = Array.from(section.querySelectorAll<HTMLElement>('[data-count]'));
+      const duration = 1200;
+      let start: number | undefined;
+      const tick = (time: number) => {
+        if (!motion.matches) {
+          counters.forEach((counter) => { counter.textContent = counter.dataset.count ?? ''; });
+          return;
+        }
+        start ??= time;
+        const progress = Math.min((time - start) / duration, 1);
+        const eased = 1 - (1 - progress) ** 3;
+        counters.forEach((counter) => { counter.textContent = Math.round(Number(counter.dataset.count) * eased).toLocaleString(); });
+        if (progress < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, { threshold: 0.2 });
+    observer.observe(section);
+  }
+</script>
+<style>
+  .results { background: var(--color-bg-inverse); color: var(--color-text-inverse); padding-block: clamp(3rem, 5vw, 4.5rem); }
+  .results-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
+  .result { display: flex; flex-direction: column-reverse; gap: .8rem; padding: .5rem clamp(1.5rem, 3vw, 3rem); border-left: 1px solid var(--color-border-inverse); }
+  .result:first-child { padding-left: 0; border: 0; }
+  dt { font-size: 1rem; font-weight: 600; }
+  dd { margin: 0; max-width: 12ch; font-size: clamp(2rem, 3.6vw, 3.75rem); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.02em; line-height: 1.2; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  @media (max-width: 767px) {
+    .results-grid { grid-template-columns: 1fr; }
+    .result, .result:first-child { padding: 1.5rem 0; border-left: 0; border-top: 1px solid var(--color-border-inverse); }
+    .result:first-child { padding-top: 0; border-top: 0; }
+    .result:last-child { padding-bottom: 0; }
+  }
+</style>

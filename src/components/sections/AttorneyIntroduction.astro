@@ -1,0 +1,37 @@
+---
+import Icon from '../ui/Icon.astro';
+import { site } from '../../data/site';
+---
+<section id="about" class="about section-space" aria-labelledby="about-title">
+  <div class="container-site about-grid">
+    <div class="about-image"><img src="/assets/about-us.png" alt="" width="1536" height="1024" loading="lazy" decoding="async" /></div>
+    <div class="about-copy">
+      <span class="about-label">About Us</span>
+      <h2 id="about-title">Experience that matters. Representation that's personal.</h2>
+      <p>At The Law Offices of Ilona Gorin, we believe every client deserves attentive legal guidance backed by real-world experience.</p>
+      <p>Attorney Ilona Gorin began her career representing businesses and insurance companies at larger law firms. In 2004, she established her own practice, bringing that valuable perspective to individuals facing personal injury claims.</p>
+      <p>Today, the firm also assists entrepreneurs and business owners with formation, business changes, and transactions.</p>
+      <p>From navigating an injury claim to making an important business decision, our approach centers on understanding your circumstances and developing a legal strategy tailored to your needs.</p>
+      <a class="button" href={site.emailHref}>Email Ilona Gorin <Icon name="arrow-right" /></a>
+    </div>
+  </div>
+</section>
+<style>
+  .about { background: var(--color-bg-page); padding-block: 3.75rem; }
+  .about-grid { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1fr); gap: clamp(3rem, 8vw, 8rem); align-items: center; }
+  .about-image { position: relative; align-self: stretch; min-height: 28rem; overflow: hidden; }
+  .about-image::after { content: ""; position: absolute; inset: 0; background: var(--color-bg-inverse); opacity: .08; pointer-events: none; }
+  .about-image img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; outline: 1px solid rgb(0 0 0 / .1); outline-offset: -1px; }
+  .about-label { display: block; margin-bottom: 1rem; color: var(--color-text-secondary); font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  h2 { max-width: 26ch; font-size: clamp(1.75rem, 3vw, 2.1875rem); }
+  p { max-width: 60ch; margin-top: 1.25rem; color: var(--color-text-secondary); }
+  p + p { margin-top: 1rem; }
+  .button { gap: .5rem; margin-top: 1.75rem; }
+  @media (hover: hover) { .about-image:hover::after { opacity: .03; } }
+  @media (prefers-reduced-motion: no-preference) {
+    .about-image img { transition: transform 300ms ease-out; }
+    .about-image::after { transition: opacity 150ms ease-out; }
+    @media (hover: hover) { .about-image:hover img { transform: scale(1.025); } }
+  }
+  @media (max-width: 767px) { .about-grid { grid-template-columns: 1fr; gap: 2.5rem; } .about-image { min-height: 0; } .about-image img { aspect-ratio: 4 / 3; } }
+</style>

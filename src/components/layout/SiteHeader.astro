@@ -1,0 +1,137 @@
+---
+import Icon from '../ui/Icon.astro';
+import { links, site } from '../../data/site';
+
+const navigation = [
+  { label: 'Home', href: '/' },
+  { label: 'Practice Areas', href: '#practice-areas' },
+  { label: 'About Ilona', href: '#about' },
+  { label: 'Insights', href: links.blog },
+  { label: 'Contact', href: links.contact },
+];
+---
+<header class="site-header">
+  <div class="utility-bar">
+    <div class="utility-clip"><div class="container-site utility-inner" aria-label="Contact information">
+      <a href={site.emailHref}><Icon name="mail" size={16} />{site.email}</a>
+      <a href={site.phoneHref}><Icon name="phone" size={16} />{site.phoneDisplay}</a>
+      <a class="utility-address" href={site.mapsHref}><Icon name="pin" size={16} />{site.address}</a>
+    </div></div>
+  </div>
+  <div class="container-site header-inner">
+    <a class="wordmark" href="/" aria-label={`${site.firmName} — home`}>
+      <span>The Law Offices of</span>
+      <strong>Ilona Gorin</strong>
+    </a>
+    <div class="header-actions">
+      <a class="mobile-call" href={site.phoneHref}>Call</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-navigation" hidden>
+        <span class="menu-label">Menu</span><span class="menu-open-icon"><Icon name="menu" /></span><span class="menu-close-icon"><Icon name="close" /></span>
+      </button>
+    </div>
+    <nav class="desktop-nav" aria-label="Main navigation">
+      {navigation.map((item) => <a href={item.href} aria-current={item.href === '/' ? 'page' : undefined}>{item.label}</a>)}
+    </nav>
+    <a class="header-call" href={site.phoneHref}>Call {site.phoneDisplay}</a>
+  </div>
+  <nav id="mobile-navigation" class="mobile-nav container-site" aria-label="Mobile navigation">
+    {navigation.map((item) => <a href={item.href} aria-current={item.href === '/' ? 'page' : undefined}>{item.label}</a>)}
+    <a class="mobile-consultation" href={links.contact}>Request a consultation</a>
+  </nav>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const utility = document.querySelector<HTMLElement>('.utility-bar');
+  if (header && utility) {
+    let hidden = false;
+    let scheduled = false;
+    const updateHeader = () => {
+      scheduled = false;
+      const focused = utility.contains(document.activeElement);
+      const nextHidden = !focused && window.scrollY > 0;
+      if (nextHidden !== hidden) {
+        hidden = nextHidden;
+        header.classList.toggle('utility-collapsed', hidden);
+        utility.inert = hidden;
+      }
+    };
+    const scheduleUpdate = () => {
+      if (!scheduled) { scheduled = true; requestAnimationFrame(updateHeader); }
+    };
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+    utility.addEventListener('focusout', scheduleUpdate);
+    updateHeader();
+  }
+
+  const button = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const menu = document.querySelector<HTMLElement>('#mobile-navigation');
+  if (button && menu) {
+    const setOpen = (open: boolean) => {
+      button.setAttribute('aria-expanded', String(open));
+      button.querySelector('.menu-label')!.textContent = open ? 'Close' : 'Menu';
+      menu!.hidden = !open;
+    };
+    setOpen(false);
+    button.hidden = false;
+    button.addEventListener('click', () => setOpen(button.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        button.focus();
+      }
+    });
+    menu.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) setOpen(false);
+    });
+  }
+</script>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 20; background: var(--color-bg-page); border-bottom: .5px solid var(--color-border-subtle); }
+  .utility-bar { display: grid; grid-template-rows: 1fr; background: var(--color-bg-inverse); color: var(--color-text-inverse); font-size: .75rem; letter-spacing: .04em; }
+  .utility-collapsed .utility-bar { grid-template-rows: 0fr; }
+  .utility-clip { min-height: 0; overflow: hidden; }
+  @media (prefers-reduced-motion: no-preference) { .utility-bar { transition: grid-template-rows 250ms ease-out; } }
+  .utility-inner { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem 2rem; padding-block: .5rem; }
+  .utility-inner a { display: inline-flex; align-items: center; gap: .5rem; color: inherit; text-decoration: none; }
+  .utility-address { margin-left: auto; }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; min-height: 80px; }
+  .wordmark { display: flex; flex-direction: column; flex-shrink: 0; color: var(--color-text-primary); text-decoration: none; line-height: 1.1; }
+  .wordmark span { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
+  .wordmark strong { margin-top: .3rem; font: 800 1.65rem/1 var(--font-heading); letter-spacing: -.04em; text-transform: uppercase; }
+  .desktop-nav { display: flex; align-items: center; gap: clamp(1rem, 1.8vw, 1.75rem); margin-left: auto; }
+  .desktop-nav a { position: relative; color: var(--color-text-primary); font-size: 1rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
+  .desktop-nav a::after { position: absolute; right: 0; bottom: -.3rem; left: 0; height: 2px; background: var(--color-accent-solid); content: ""; transform: scaleX(0); transform-origin: left; }
+  .desktop-nav a:focus-visible::after { transform: scaleX(1); }
+  @media (hover: hover) { .desktop-nav a:hover::after { transform: scaleX(1); } }
+  @media (prefers-reduced-motion: no-preference) { .desktop-nav a::after { transition: transform 200ms ease-out; } }
+  .utility-inner a:hover { text-decoration: underline; text-underline-offset: .3em; }
+  .header-call { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; padding: .65rem 1rem; background: var(--color-accent-solid); color: var(--color-text-inverse); text-decoration: none; font-size: .82rem; font-weight: 600; white-space: nowrap; }
+  .header-actions, .mobile-nav { display: none; }
+  .menu-close-icon, .menu-toggle[aria-expanded="true"] .menu-open-icon { display: none; }
+  .menu-toggle[aria-expanded="true"] .menu-close-icon { display: inline; }
+  @media (max-width: 1250px) {
+    .header-inner { min-height: 72px; }
+    .desktop-nav, .header-call { display: none; }
+    .header-actions { display: flex; align-items: center; gap: 1rem; }
+    .mobile-call, .menu-toggle { min-height: 44px; display: inline-flex; align-items: center; color: var(--color-text-primary); font-size: .875rem; font-weight: 600; }
+    .mobile-call { text-decoration: underline; text-underline-offset: .25em; }
+    .menu-toggle { gap: .55rem; background: transparent; border: 0; cursor: pointer; padding: 0; }
+    .menu-toggle[hidden], .mobile-nav[hidden] { display: none; }
+
+    .mobile-nav { display: grid; padding-bottom: 1.5rem; }
+    .mobile-nav a { display: flex; align-items: center; min-height: 48px; border-top: 1px solid var(--color-border-subtle); color: var(--color-text-primary); text-decoration: none; font-size: .95rem; }
+    .mobile-nav .mobile-consultation { margin-top: .5rem; justify-content: center; border: 0; background: var(--color-accent-solid); color: var(--color-text-inverse); font-weight: 600; }
+  }
+  @media (max-width: 767px) {
+    .utility-inner { gap: .3rem 1.25rem; font-size: .72rem; }
+    .utility-address { flex-basis: 100%; margin-left: 0; }
+  }
+  @media (max-width: 400px) {
+    .header-actions { gap: .65rem; }
+    .wordmark span { font-size: .75rem; }
+    .wordmark strong { font-size: 1.5rem; }
+  }
+</style>
